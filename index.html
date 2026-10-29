@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#101b31">
+<title>My Wealth Tracker</title>
+<link rel="manifest" href="manifest.webmanifest">
+<style>
+:root{--bg:#f4f6fa;--card:#fff;--ink:#172238;--muted:#6d7890;--navy:#101b31;--blue:#3569d4;--green:#13845b;--line:#e5eaf2;--soft:#edf2fb}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;padding-bottom:calc(24px + env(safe-area-inset-bottom))}
+header{background:var(--navy);color:#fff;padding:22px 18px 24px;border-radius:0 0 24px 24px}
+.top{display:flex;align-items:center;justify-content:space-between}.brand{font-weight:750;font-size:18px;letter-spacing:.2px}.period{font-size:12px;color:#c5d0e4;margin-top:5px}
+.wrap{max-width:760px;margin:auto;padding:0 15px}.hero{margin-top:18px}.eyebrow{font-size:11px;letter-spacing:1px;color:#c5d0e4;font-weight:700}.big{font-size:32px;font-weight:800;margin:5px 0}.sub{color:#c5d0e4;font-size:12px}
+main{max-width:760px;margin:0 auto;padding:16px 15px}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.card{background:var(--card);border:1px solid var(--line);border-radius:17px;padding:15px;box-shadow:0 2px 10px #17223808}.card h3{font-size:13px;margin:0 0 10px;color:var(--muted);font-weight:650}.amount{font-size:22px;font-weight:800;letter-spacing:-.5px}.target{font-size:12px;color:var(--muted);margin-top:4px}.bar{height:8px;background:#edf0f5;border-radius:9px;overflow:hidden;margin:12px 0 6px}.fill{height:100%;background:var(--blue);border-radius:9px;width:0%}.pct{font-size:11px;color:var(--muted)}.section{font-weight:750;font-size:16px;margin:23px 2px 10px}.row{display:flex;justify-content:space-between;align-items:center;gap:10px}.muted{color:var(--muted);font-size:12px}.tabs{display:flex;gap:7px;overflow:auto;margin:17px 0 12px}.tab{border:1px solid var(--line);background:#fff;padding:10px 13px;border-radius:20px;font-size:12px;font-weight:700;white-space:nowrap;color:var(--muted)}.tab.active{background:var(--navy);color:#fff;border-color:var(--navy)}
+label{display:block;font-size:12px;font-weight:650;color:var(--muted);margin:11px 0 5px}input,select,textarea{width:100%;border:1px solid var(--line);border-radius:11px;padding:12px;background:#fff;font:inherit;color:var(--ink)}button{border:0;border-radius:12px;padding:12px 15px;background:var(--blue);color:#fff;font-weight:750;font-size:13px;cursor:pointer}.secondary{background:var(--soft);color:var(--navy)}.danger{background:#fff0ef;color:#a32d25}.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.wide{grid-column:1/-1}.list{margin-top:10px}.item{padding:12px 0;border-bottom:1px solid var(--line)}.notice{background:#fff8e8;border:1px solid #f3dfae;padding:12px;border-radius:12px;font-size:12px;color:#70521b;line-height:1.45}.hidden{display:none!important}.foot{font-size:11px;color:var(--muted);line-height:1.5;margin:18px 2px}
+@media(min-width:620px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}.amount{font-size:24px}}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+ <div class="top"><div><div class="brand">MY WEALTH</div><div class="period">PERSONAL FINANCE TRACKER</div></div><div style="font-size:22px">◈</div></div>
+ <div class="hero"><div class="eyebrow">COMBINED PORTFOLIO TARGET</div><div class="big" id="combinedTarget">₹42,00,000</div><div class="sub">24-month journey · Nov 2026 – Oct 2028</div></div>
+</div></header>
+<main>
+ <div class="grid" id="goalCards"></div>
+ <div class="section">Your progress</div>
+ <div class="card"><div class="row"><b>Combined current value</b><b id="combinedCurrent">₹0</b></div><div class="bar"><div class="fill" id="combinedBar"></div></div><div class="row muted"><span id="combinedPct">0% of target</span><span id="monthsLeft">24 months planned</span></div></div>
+ <div class="tabs">
+  <button class="tab active" data-tab="update">Update values</button><button class="tab" data-tab="history">History</button><button class="tab" data-tab="settings">Settings & backup</button>
+ </div>
+ <section id="update">
+  <div class="section">Add a monthly snapshot</div>
+  <div class="card">
+   <div class="notice">Enter the latest balances manually. Savings means liquid / relocation savings. Mutual funds and stocks use current market value, not invested amount.</div>
+   <form id="entryForm">
+    <label for="entryDate">Snapshot date</label><input id="entryDate" type="date" required>
+    <div class="formgrid">
+     <div><label for="savings">Liquid savings (₹)</label><input id="savings" type="number" min="0" step="1" placeholder="e.g. 260000"></div>
+     <div><label for="mf">Mutual funds (₹)</label><input id="mf" type="number" min="0" step="1" placeholder="Current market value"></div>
+     <div><label for="stocks">Stocks (₹)</label><input id="stocks" type="number" min="0" step="1" placeholder="Current market value"></div>
+     <div><label for="note">Note (optional)</label><input id="note" type="text" placeholder="Monthly update"></div>
+     <div class="wide"><button type="submit" style="width:100%">Save snapshot</button></div>
+    </div>
+   </form>
+  </div>
+ </section>
+ <section id="history" class="hidden">
+  <div class="section">Saved snapshots</div><div class="card"><div id="historyList" class="list"></div></div>
+ </section>
+ <section id="settings" class="hidden">
+  <div class="section">Goals & data</div>
+  <div class="card">
+   <p class="muted">Adjust targets and the 24-month period. Your entries stay in this browser on this iPhone.</p>
+   <div class="formgrid">
+    <div><label>Savings target (₹)</label><input id="targetSavings" type="number"></div>
+    <div><label>MF target (₹)</label><input id="targetMf" type="number"></div>
+    <div><label>Stocks target (₹)</label><input id="targetStocks" type="number"></div>
+    <div><label>Horizon (months)</label><input id="horizon" type="number" min="1" max="120"></div>
+    <div class="wide"><button id="saveSettings" style="width:100%">Save goals</button></div>
+   </div>
+   <div class="row" style="margin-top:18px"><button class="secondary" id="export">Export backup (JSON)</button><button class="secondary" id="csv">Export history (CSV)</button></div>
+   <label for="importFile">Restore from backup</label><input id="importFile" type="file" accept="application/json">
+   <div class="foot">Privacy: no account or bank connection is used. Data is stored locally by this browser. Clearing Safari website data, changing devices, or removing site data may erase it. Export a backup regularly. This prototype does not sync automatically to iCloud.</div>
+   <button class="danger" id="reset" style="width:100%">Delete all saved data</button>
+  </div>
+ </section>
+ <div class="foot">Market values fluctuate. This tracker records your manual updates and does not provide investment advice or predict returns. NPS, PPF, PF and insurance are intentionally kept outside these three goals.</div>
+</main>
+<script>
+const KEY='myWealthTracker.v1';
+const defaults={targets:{savings:2000000,mf:2000000,stocks:200000},horizon:24,entries:[{date:'2026-10-29',savings:260000,mf:0,stocks:0,note:'Opening savings balance entered from initial plan'}]};
+let state=load();
+function load(){try{return JSON.parse(localStorage.getItem(KEY))||structuredClone(defaults)}catch(e){return structuredClone(defaults)}}
+function persist(){localStorage.setItem(KEY,JSON.stringify(state));render()}
+function fmt(n){return '₹'+Math.round(Number(n)||0).toLocaleString('en-IN')}
+function latest(){return [...state.entries].sort((a,b)=>a.date.localeCompare(b.date)).at(-1)||{savings:0,mf:0,stocks:0}}
+function pct(v,t){return t>0?Math.min(100,(v/t)*100):0}
+function render(){
+ const x=latest(), goals=[['Savings','savings','Liquid / relocation savings'],['Mutual funds','mf','Current portfolio market value'],['Stocks','stocks','Current portfolio market value']];
+ document.getElementById('combinedTarget').textContent=fmt(Object.values(state.targets).reduce((a,b)=>a+b,0));
+ document.getElementById('goalCards').innerHTML=goals.map(([name,k,desc])=>`<div class="card"><h3>${name}</h3><div class="amount">${fmt(x[k])}</div><div class="target">Target ${fmt(state.targets[k])}</div><div class="bar"><div class="fill" style="width:${pct(x[k],state.targets[k])}%"></div></div><div class="pct">${pct(x[k],state.targets[k]).toFixed(1)}% achieved</div><div class="muted" style="margin-top:7px">${desc}</div></div>`).join('');
+ const total=x.savings+x.mf+x.stocks, target=Object.values(state.targets).reduce((a,b)=>a+b,0);
+ document.getElementById('combinedCurrent').textContent=fmt(total);
+ document.getElementById('combinedBar').style.width=pct(total,target)+'%';
+ document.getElementById('combinedPct').textContent=pct(total,target).toFixed(1)+'% of target';
+ document.getElementById('monthsLeft').textContent=state.horizon+'-month plan';
+ document.getElementById('historyList').innerHTML=state.entries.length? [...state.entries].sort((a,b)=>b.date.localeCompare(a.date)).map((e,i)=>`<div class="item"><div class="row"><b>${e.date}</b><b>${fmt((+e.savings||0)+(+e.mf||0)+(+e.stocks||0))}</b></div><div class="muted">Savings ${fmt(e.savings)} · MF ${fmt(e.mf)} · Stocks ${fmt(e.stocks)}</div><div class="muted">${escapeHtml(e.note||'')}</div><div style="text-align:right;margin-top:7px"><button class="danger" onclick="removeEntry('${e.date}')">Delete</button></div></div>`).join(''):'<p class="muted">No snapshots yet.</p>';
+ document.getElementById('targetSavings').value=state.targets.savings;
+ document.getElementById('targetMf').value=state.targets.mf;
+ document.getElementById('targetStocks').value=state.targets.stocks;
+ document.getElementById('horizon').value=state.horizon;
+}
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function removeEntry(d){if(confirm('Delete snapshot dated '+d+'?')){state.entries=state.entries.filter(e=>e.date!==d);persist()}}
+document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x===b));['update','history','settings'].forEach(id=>document.getElementById(id).classList.toggle('hidden',id!==b.dataset.tab))}));
+document.getElementById('entryDate').value=new Date().toISOString().slice(0,10);
+document.getElementById('entryForm').addEventListener('submit',e=>{e.preventDefault();const d=document.getElementById('entryDate').value;const obj={date:d,savings:+document.getElementById('savings').value||0,mf:+document.getElementById('mf').value||0,stocks:+document.getElementById('stocks').value||0,note:document.getElementById('note').value};state.entries=state.entries.filter(x=>x.date!==d);state.entries.push(obj);persist();e.target.reset();document.getElementById('entryDate').value=d;alert('Snapshot saved on this device.');});
+document.getElementById('saveSettings').addEventListener('click',()=>{state.targets={savings:+targetSavings.value||0,mf:+targetMf.value||0,stocks:+targetStocks.value||0};state.horizon=Math.max(1,Math.min(120,+horizon.value||24));persist();alert('Goals updated.');});
+document.getElementById('export').addEventListener('click',()=>download('my-wealth-backup.json',JSON.stringify(state,null,2),'application/json'));
+document.getElementById('csv').addEventListener('click',()=>{let rows=[['Date','Savings','Mutual funds','Stocks','Note'],...state.entries.map(e=>[e.date,e.savings,e.mf,e.stocks,e.note||''])];download('my-wealth-history.csv',rows.map(r=>r.map(v=>'"'+String(v).replaceAll('"','""')+'"').join(',')).join('\n'),'text/csv')});
+function download(name,content,type){const a=document.createElement('a'),url=URL.createObjectURL(new Blob([content],{type}));a.href=url;a.download=name;a.click();URL.revokeObjectURL(url)}
+document.getElementById('importFile').addEventListener('change',async e=>{const f=e.target.files[0];if(!f)return;try{const v=JSON.parse(await f.text());if(!v.targets||!Array.isArray(v.entries))throw Error();state=v;persist();alert('Backup restored.')}catch(err){alert('Could not read that backup file.')}});
+document.getElementById('reset').addEventListener('click',()=>{if(confirm('Permanently delete all tracker data on this browser? Export a backup first if needed.')){state={targets:{savings:2000000,mf:2000000,stocks:200000},horizon:24,entries:[]};persist();}});
+render();
+if('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('./sw.js').catch(()=>{});
+</script>
+</body></html>

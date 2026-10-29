@@ -1,0 +1,9 @@
+{
+  "name": "My Wealth Tracker",
+  "short_name": "My Wealth",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f4f6fa",
+  "theme_color": "#101b31",
+  "icons": []
+}
